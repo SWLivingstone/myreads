@@ -43,6 +43,8 @@ To simplify your development process, we've provided a backend server for you to
 * [`update`](#update)
 * [`search`](#search)
 
+{title, subtitle, authors, publisher, publishedDate, description, industryIdentifiers, readingModes, pageCount, printType, categories, averageRating, ratingsCount, maturityRating, allowAnonLogging, contentVersion, panelizationSummary, imageLinks, language, previewLink, infoLink, canonicalVolumeLink, id, shelf}
+
 ### `getAll`
 
 Method Signature:
