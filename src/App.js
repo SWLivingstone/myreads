@@ -1,23 +1,26 @@
 import React from 'react'
+import { Route } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 import Shelf from './Shelf.js'
+import Header from './Header.js'
+import AddSearchButton from './AddSearchButton.js'
+import BookSearch from './BookSearch.js'
 
 class BooksApp extends React.Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: false,
-    books: []
+    currentBookList: [],
+    books: [],
+    shelves: [
+      {name: "Currently Reading", camleCase: 'currentlyReading'},
+      {name: "Want To Read", camleCase: 'wantToRead'},
+      {name: "Read", camleCase: 'read'}
+    ]
   }
 
   loadBookList() {
     BooksAPI.getAll().then((books) => {
-      this.setState({ books })
+      this.setState({ books: books, currentBookList: books })
     })
   }
 
@@ -26,68 +29,54 @@ class BooksApp extends React.Component {
   }
 
   changeShelf(book, shelf) {
-    return BooksAPI.update(book, shelf)
+    BooksAPI.update(book, shelf).then(() => this.loadBookList())
+  }
+
+  setCurrentBookList(books) {
+    this.setState({ currentBookList: books })
   }
 
   render() {
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
-          <div className="search-books">
-            <div className="search-books-bar">
-              <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
-              <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
-                <input type="text" placeholder="Search by title or author"/>
-
-              </div>
-            </div>
-            <div className="search-books-results">
-              <ol className="books-grid"></ol>
-            </div>
-          </div>
-        ) : (
-          <div className="list-books">
-            <div className="list-books-title">
-              <h1>MyReads</h1>
-            </div>
+        <Route exact path="/" render={ () =>(
+          <div className="list-books" onChange={this.loadBookList()}>
+            <Header/>
             <div className="list-books-content">
               <div>
-                <Shelf
-                  books={this.state.books.filter(book => book.shelf === 'currentlyReading')}
-                  shelfName="Currently Reading"
-                  changeShelf={(book, shelf) => {
-                    this.changeShelf(book, shelf).then(() => this.loadBookList())
-                  }}
-                />
-                <Shelf
-                  books={this.state.books.filter(book => book.shelf === 'wantToRead')}
-                  shelfName="Want To Read"
-                  changeShelf={(book, shelf) => {
-                    this.changeShelf(book, shelf).then(() => this.loadBookList())
-                  }}
-                />
-                <Shelf
-                  books={this.state.books.filter(book => book.shelf === 'read')}
-                  shelfName="Read"
-                  changeShelf={(book, shelf) => {
-                    this.changeShelf(book, shelf).then(() => this.loadBookList())
-                  }}
-                />
+                {this.state.shelves.map( (shelf, index) => (
+                  <Shelf
+                    key={index}
+                    books={this.state.books.filter(book => book.shelf === shelf.camleCase)}
+                    shelfName={shelf.name}
+                    changeShelf={(book, shelf) => this.changeShelf(book, shelf)}
+                  />
+                ))}
               </div>
             </div>
-            <div className="open-search">
-              <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
-            </div>
+            <AddSearchButton/>
           </div>
-        )}
+        )}/>
+        <Route path="/search" render={ ({history}) => (
+          <BookSearch
+            myBooks={this.state.books}
+            changeShelf={(book, shelf) => this.changeShelf(book, shelf)}
+            setCurrentBookList={books => this.setCurrentBookList(books)}
+            currentBookList={this.state.currentBookList}
+          />
+        )}/>
+        {this.state.currentBookList.map(book => (
+          <Route exact path={`/${book.id}-info`} key={book.id} render={({history}) => (
+            <div>
+              <p>HELLO EVERYONE!!</p>
+              <div>
+                <button onClick={() => history.goBack()}
+                >GO BACK</button>
+              </div>
+            </div>
+          )}
+          />
+        ))}
       </div>
     )
   }

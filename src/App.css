@@ -147,7 +147,7 @@ body, .app {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #60ac5d;
+  background: #2e7d32;
   background-image: url('./icons/arrow-drop-down.svg');
   background-repeat: no-repeat;
   background-position: center;
@@ -166,7 +166,38 @@ body, .app {
 .book-cover {
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   background: #eee;
+  /*display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  align-items: center;*/
 }
+
+.book-cover-container {
+  position: relative;
+}
+
+.book-cover-container:hover
+.more-info {
+  opacity: 1;
+  color: blue;
+}
+
+.book-cover-container:hover
+.book-cover {
+  opacity: .5;
+}
+
+.more-info {
+  opacity: 0;
+  font-size: 60px;
+  position: absolute;
+  top: 35%;
+  right: 28%;
+  margin-bottom: 200px;
+}
+
 .book-cover-title {
   padding: 20px 10px 0;
   text-align: center;
