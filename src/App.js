@@ -30,7 +30,8 @@ class BooksApp extends React.Component {
   }
 
   changeShelf(book, shelf) {
-    BooksAPI.update(book, shelf).then(() => this.loadBookList())
+    return BooksAPI.update(book, shelf)
+    .then(() => this.loadBookList())
   }
 
   setCurrentBookList(books) {
@@ -40,6 +41,7 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
+        {/* Main Page */}
         <Route exact path="/" render={ () =>(
           <div className="list-books" onChange={this.loadBookList()}>
             <Header/>
@@ -58,14 +60,16 @@ class BooksApp extends React.Component {
             <AddSearchButton/>
           </div>
         )}/>
+        {/* Search Page */}
         <Route path="/search" render={ ({history}) => (
           <BookSearch
+            currentBookList={this.state.currentBookList}
             myBooks={this.state.books}
             changeShelf={(book, shelf) => this.changeShelf(book, shelf)}
             setCurrentBookList={books => this.setCurrentBookList(books)}
-            currentBookList={this.state.currentBookList}
           />
         )}/>
+        {/* Dynamically created BookInfo pages */}
         {this.state.currentBookList.map(book => (
           <Route exact path={`/${book.id}-info`} key={book.id} render={({history}) => (
             <BookInfo

@@ -11,10 +11,10 @@ class BookInfo extends Component {
         <div className="book-info-container">
           <div className="book-info-header">
             <div>
-              <div className="book-info-cover" style={{height: 193, width: 128, backgroundImage: `url("${book.imageLinks.thumbnail}")`}}></div>
+              <div className="book-cover book-info-cover" style={{height: 193, width: 128, backgroundImage: `url("${book.imageLinks.thumbnail}")`}}></div>
             </div>
             <div className="book-info-title">
-              <h1 style={{fontSize: `${book.title.length > 30 ? 25 : 30}px`}}>
+              <h1>
                 {book.title}
               </h1>
               <h4>by: {book.authors}</h4>

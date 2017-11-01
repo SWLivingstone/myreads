@@ -15,17 +15,27 @@ class BookSearch extends Component {
     this.updateStateWithResults()
   }
 
+  changeShelf = (book, shelf) => {
+    this.props.changeShelf(book, shelf)
+    .then(() => this.updateStateWithResults())
+  }
+
+  // Compares myBooks with search result.
+  // Where myBooks matches Result swaps in book from myBooks
+  // so that search results display current bookShelf
   updateStateWithResults() {
     const myBooks = this.props.myBooks.map((book) => book.id)
 
     BooksAPI.search(this.state.query, 20).then( books => {
-      if (books){
-        this.setState( {result: books.map( book => {
-          if (myBooks.includes(book.id))
-            return this.props.myBooks.find( b => b.id === book.id)
-          else
-            return book
-        })})
+      if (books && books.length > 0){
+        this.setState(() => ({
+          result: books.map( book => {
+            if (myBooks.includes(book.id))
+              return this.props.myBooks.find( b => b.id === book.id)
+            else
+              return book
+          })
+        }))
       }
       this.props.setCurrentBookList(this.state.result)
     })
@@ -41,15 +51,24 @@ class BookSearch extends Component {
             <input onChange={event => this.handleQuery(event)} type="text" placeholder="Search by title or author"/>
           </div>
         </div>
-        {this.state.result === this.props.currentBookList &&
           <div className="search-books-results">
             <Shelf
-              books={this.state.result}
+              books={this.state.result.filter( book => {
+                if (book)
+                  return !book.shelf
+                else
+                  return null
+              })}
               key="Search Results"
-              changeShelf={this.props.changeShelf}
+              changeShelf={(book, shelf) => this.changeShelf(book, shelf)}
+              shelfName="Not In My Collection"
+            />
+            <Shelf
+              books={this.state.result.filter( book => book && book.shelf && book.shelf !== "none")}
+              changeShelf={(book, shelf) => this.changeShelf(book, shelf)}
+              shelfName="My Books"
             />
           </div>
-        }
       </div>
     )
   }
