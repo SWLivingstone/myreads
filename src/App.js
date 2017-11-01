@@ -6,6 +6,7 @@ import Shelf from './Shelf.js'
 import Header from './Header.js'
 import AddSearchButton from './AddSearchButton.js'
 import BookSearch from './BookSearch.js'
+import BookInfo from './BookInfo.js'
 
 class BooksApp extends React.Component {
   state = {
@@ -21,7 +22,7 @@ class BooksApp extends React.Component {
   loadBookList() {
     BooksAPI.getAll().then((books) => {
       this.setState({ books: books, currentBookList: books })
-    })
+    }, () => null)
   }
 
   componentDidMount() {
@@ -67,13 +68,10 @@ class BooksApp extends React.Component {
         )}/>
         {this.state.currentBookList.map(book => (
           <Route exact path={`/${book.id}-info`} key={book.id} render={({history}) => (
-            <div>
-              <p>HELLO EVERYONE!!</p>
-              <div>
-                <button onClick={() => history.goBack()}
-                >GO BACK</button>
-              </div>
-            </div>
+            <BookInfo
+              book={book}
+              history={history}
+            />
           )}
           />
         ))}

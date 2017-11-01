@@ -1,10 +1,20 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { Collapse } from 'react-collapse';
 
 class Shelf extends Component {
 
+  state = {
+    isOpen: true
+  }
+
   handleSelect = (book, shelf) => {
     this.props.changeShelf(book, shelf)
+  }
+
+  toggleCollapse = () => {
+    const toggle = this.state.isOpen ? false : true
+    this.setState({ isOpen: toggle })
   }
 
   render() {
@@ -12,8 +22,11 @@ class Shelf extends Component {
       <div>
         <div className="bookshelf">
           {this.props.shelfName &&
-          <h2 className="bookshelf-title">{this.props.shelfName}</h2>}
-          <div className="bookshelf-books">
+          <h2 onClick={() => this.toggleCollapse()} className="bookshelf-title">
+            {this.props.shelfName}
+            <i className={`collapse fa fa-angle-${this.state.isOpen ? "up" : "down"}`}/>
+          </h2>}
+          <Collapse isOpened={this.state.isOpen} className="bookshelf-books">
             <ol className="books-grid">
               {this.props.books.map((book, index) => (
                 <li key={`${book.id}${this.props.shelfName}`}>
@@ -42,7 +55,7 @@ class Shelf extends Component {
                 </li>
               ))}
             </ol>
-          </div>
+          </Collapse>
         </div>
       </div>
     )

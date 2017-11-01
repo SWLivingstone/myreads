@@ -26,6 +26,11 @@ body, .app {
   flex: 1;
 }
 
+.collapse {
+  font-weight: 800;
+  padding-left: 10px;
+}
+
 .bookshelf {
   padding: 0 10px 20px;
 }
@@ -202,4 +207,32 @@ body, .app {
   padding: 20px 10px 0;
   text-align: center;
   font-size: 0.8em;
+}
+
+/* book info page */
+
+.book-info-container {
+  display: flex;
+  margin: 5%;
+}
+
+.book-info-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.book-info-cover {
+  margin-right: 30px;
+}
+
+.book-info-body {
+  margin: 5%;
+}
+
+.book-info-back {
+  position: fixed;
+  font-size: 40px;
+  color: blue;
+  right: 25px;
+  top: 25px;
 }
