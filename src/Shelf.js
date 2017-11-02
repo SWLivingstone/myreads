@@ -38,7 +38,10 @@ class Shelf extends Component {
                         <div className="book-cover-container">
                           {/* Link to dynamically created BookInfo page */}
                           <Link to={`${this.props.infoRoute}${book.id}`} onClick={() => window.scrollTo(0,0)} >
-                            <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks.thumbnail}")` }}></div>
+                            <div className="book-cover"
+                              style={{ width: 128, height: 193,
+                                backgroundImage: book.imageLinks ? `url("${book.imageLinks.thumbnail}")` : 'url("http://via.placeholder.com/128x193?text=No%20Cover")' }}>
+                            </div>
                             <div className="more-info fa fa-info-circle"></div>
                           </Link>
                         </div>
@@ -49,7 +52,7 @@ class Shelf extends Component {
                           />
                       </div>
                       <div className="book-title">{book.title}</div>
-                      <div className="book-authors">{book.authors}</div>
+                      <div className="book-authors">{book.authors ? book.authors.join(', ') : ''}</div>
                     </div>
                   </li>
                 ))}

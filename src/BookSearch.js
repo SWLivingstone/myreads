@@ -6,15 +6,18 @@ import BookInfo from './BookInfo.js'
 class BookSearch extends Component {
 
   state = {
-    query: '',
     result: [],
-    myBooks: []
+    myBooks: [],
+    lastQuery: ""
   }
 
   handleQuery = event => {
-    this.setState({query: event.target.value})
-    if (this.state.query)
-      this.updateStateWithResults()
+    if (event.target.value) {
+      this.updateStateWithResults(event.target.value)
+      this.setState({lastQuery: event.target.value})
+    }
+    else
+      this.setState({result: [], lastQuery: ''})
   }
 
   componentDidMount() {
@@ -58,7 +61,7 @@ class BookSearch extends Component {
   changeShelf(book, shelf) {
     BooksAPI.update(book, shelf)
     .then(() => this.updateMyBooks(book, shelf))
-    .then(() => this.updateStateWithResults())
+    .then(() => this.updateStateWithResults(this.state.lastQuery))
   }
 
   /**
@@ -66,10 +69,10 @@ class BookSearch extends Component {
   * Compares search results with myBooks to determine which
   * which books from the search results are already in the collection.
   */
-  updateStateWithResults() {
+  updateStateWithResults(query) {
     const myBooks = this.state.myBooks.map((book) => book.id)
-    
-    BooksAPI.search(this.state.query, 20).then( books => {
+
+    BooksAPI.search(query, 20).then( books => {
       if (books && books.length > 0){
         this.setState(() => ({
           result: books.map( book => {
@@ -80,6 +83,8 @@ class BookSearch extends Component {
           })
         }))
       }
+      else
+        this.setState({ result: [] })
     })
   }
 
@@ -92,7 +97,11 @@ class BookSearch extends Component {
             <div className="search-books-bar">
               <Link to="/" className="close-search" >Close</Link>
               <div className="search-books-input-wrapper">
-                <input onChange={event => this.handleQuery(event)} type="text" placeholder="Search by title or author"/>
+                <input
+                  value={this.state.lastQuery}
+                  onChange={event => this.handleQuery(event)}
+                  type="text"
+                  placeholder="Search by title or author"/>
               </div>
             </div>
               <div className="search-books-results">

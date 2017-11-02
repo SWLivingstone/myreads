@@ -8,6 +8,21 @@ body, .app {
   background: white;
 }
 
+.nothing-here-container {
+  margin-top: 10%;
+  height: 500px;
+  width: 100%;
+}
+
+.nothing-here {
+  height: 100%;
+  width: 100%;
+    background-image: url('./icons/not-found.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
 /* main page */
 
 .list-books-title {
