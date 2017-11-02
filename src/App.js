@@ -10,6 +10,7 @@ import BookInfo from './BookInfo.js'
 
 class BooksApp extends React.Component {
   state = {
+    currentBookList: [],
     books: [],
     shelves: [
       {name: "Currently Reading", camleCase: 'currentlyReading'},
@@ -20,7 +21,7 @@ class BooksApp extends React.Component {
 
   loadBookList() {
     BooksAPI.getAll().then((books) => {
-      this.setState({ books })
+      this.setState({ books: books, currentBookList: books })
     }, () => null)
   }
 
@@ -29,7 +30,7 @@ class BooksApp extends React.Component {
   }
 
   changeShelf(book, shelf) {
-    BooksAPI.update(book, shelf)
+    return BooksAPI.update(book, shelf)
     .then(() => this.loadBookList())
   }
 
@@ -65,12 +66,13 @@ class BooksApp extends React.Component {
           <BookSearch
           />
         )}/>
-        {/* Dynamically created BookInfo pages */}
-        {this.state.books.map(book => (
+        {/* Dynamically created info pages for each book in the User's library */}
+        {this.state.currentBookList.map(book => (
           <Route exact path={`/info-${book.id}`} key={book.id} render={({history}) => (
             <BookInfo
               book={book}
               history={history}
+              handleSelect={(book, shelf) => this.changeShelf(book, shelf)}
             />
           )}
           />

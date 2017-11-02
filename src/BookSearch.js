@@ -43,6 +43,7 @@ class BookSearch extends Component {
       }))
     }
     else {
+      book.shelf = shelf
       this.setState(() => ({
         myBooks: this.state.myBooks.map((b) => {
           if (b.id !== book.id)
@@ -67,7 +68,7 @@ class BookSearch extends Component {
   */
   updateStateWithResults() {
     const myBooks = this.state.myBooks.map((book) => book.id)
-
+    
     BooksAPI.search(this.state.query, 20).then( books => {
       if (books && books.length > 0){
         this.setState(() => ({
@@ -95,6 +96,8 @@ class BookSearch extends Component {
               </div>
             </div>
               <div className="search-books-results">
+                {/* Display books from search results that are NOT already in
+                  user's libray */}
                 <Shelf
                   books={this.state.result.filter( book => {
                     if (book)
@@ -107,6 +110,8 @@ class BookSearch extends Component {
                   shelfName="Not In My Collection"
                   infoRoute="/search/info-"
                 />
+                {/* Display books from search results that ARE currently in
+                  the user's libray */}
                 <Shelf
                   books={this.state.result.filter( book => book && book.shelf && book.shelf !== "none")}
                   changeShelf={(book, shelf) => this.changeShelf(book, shelf)}
@@ -116,11 +121,13 @@ class BookSearch extends Component {
               </div>
             </div>
           )}/>
+          {/* Dynamically generate info pages for each book in the search results */}
           {this.state.result.map((book) => (
             <Route key={`search-info-${book.id}`} path={`/search/info-${book.id}`} render={({history}) => (
               <BookInfo
                 book={book}
                 history={history}
+                handleSelect={(book, shelf) => this.changeShelf(book, shelf)}
               />
             )}/>
           ))}
