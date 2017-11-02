@@ -10,7 +10,6 @@ import BookInfo from './BookInfo.js'
 
 class BooksApp extends React.Component {
   state = {
-    currentBookList: [],
     books: [],
     shelves: [
       {name: "Currently Reading", camleCase: 'currentlyReading'},
@@ -21,7 +20,7 @@ class BooksApp extends React.Component {
 
   loadBookList() {
     BooksAPI.getAll().then((books) => {
-      this.setState({ books: books, currentBookList: books })
+      this.setState({ books })
     }, () => null)
   }
 
@@ -30,7 +29,7 @@ class BooksApp extends React.Component {
   }
 
   changeShelf(book, shelf) {
-    return BooksAPI.update(book, shelf)
+    BooksAPI.update(book, shelf)
     .then(() => this.loadBookList())
   }
 
@@ -53,6 +52,7 @@ class BooksApp extends React.Component {
                     books={this.state.books.filter(book => book.shelf === shelf.camleCase)}
                     shelfName={shelf.name}
                     changeShelf={(book, shelf) => this.changeShelf(book, shelf)}
+                    infoRoute="/info-"
                   />
                 ))}
               </div>
@@ -63,15 +63,11 @@ class BooksApp extends React.Component {
         {/* Search Page */}
         <Route path="/search" render={ ({history}) => (
           <BookSearch
-            currentBookList={this.state.currentBookList}
-            myBooks={this.state.books}
-            changeShelf={(book, shelf) => this.changeShelf(book, shelf)}
-            setCurrentBookList={books => this.setCurrentBookList(books)}
           />
         )}/>
         {/* Dynamically created BookInfo pages */}
-        {this.state.currentBookList.map(book => (
-          <Route exact path={`/${book.id}-info`} key={book.id} render={({history}) => (
+        {this.state.books.map(book => (
+          <Route exact path={`/info-${book.id}`} key={book.id} render={({history}) => (
             <BookInfo
               book={book}
               history={history}

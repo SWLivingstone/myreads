@@ -37,7 +37,7 @@ class Shelf extends Component {
                       <div className="book-top">
                         <div className="book-cover-container">
                           {/* Link to dynamically created BookInfo page */}
-                          <Link to={`${book.id}-info`} onClick={() => window.scrollTo(0,0)} >
+                          <Link to={`${this.props.infoRoute}${book.id}`} onClick={() => window.scrollTo(0,0)} >
                             <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks.thumbnail}")` }}></div>
                             <div className="more-info fa fa-info-circle"></div>
                           </Link>
